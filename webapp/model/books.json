@@ -1,0 +1,44 @@
+{
+  "Books": [
+    {
+      "ID": "B001",
+      "Name": "The Pragmatic Programmer",
+      "Author": "Andrew Hunt",
+      "Genre": "Programming",
+      "ReleaseDate": "1999-10-30",
+      "AvailableQuantity": 5
+    },
+    {
+      "ID": "B002",
+      "Name": "Clean Code",
+      "Author": "Robert C. Martin",
+      "Genre": "Programming",
+      "ReleaseDate": "2008-08-01",
+      "AvailableQuantity": 3
+    },
+    {
+      "ID": "B003",
+      "Name": "1984",
+      "Author": "George Orwell",
+      "Genre": "Fiction",
+      "ReleaseDate": "1949-06-08",
+      "AvailableQuantity": 10
+    },
+    {
+      "ID": "B004",
+      "Name": "The Hobbit",
+      "Author": "J.R.R. Tolkien",
+      "Genre": "Fantasy",
+      "ReleaseDate": "1937-09-21",
+      "AvailableQuantity": 7
+    },
+    {
+      "ID": "B005",
+      "Name": "Deep Work",
+      "Author": "Cal Newport",
+      "Genre": "Productivity",
+      "ReleaseDate": "2016-01-05",
+      "AvailableQuantity": 4
+    }
+  ]
+}
