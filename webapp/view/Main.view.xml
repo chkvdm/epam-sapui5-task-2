@@ -52,9 +52,12 @@
                         <Text text="Release Date" />
                     </Column>
                     <Column
-                        hAlign="End"
+                        hAlign="Center"
                         width="10em">
                         <Text text="Available Quantity" />
+                    </Column>
+                    <Column hAlign="Center">
+                        <Label text="Actions" />
                     </Column>
                 </columns>
 
@@ -62,11 +65,26 @@
                     <ColumnListItem>
                         <cells>
                             <Text text="{books>ID}" />
-                            <Text text="{books>Name}" />
+                            <HBox>
+                                <Text text="{books>Name}" visible="{= !${books>editMode}}" />
+                                <Input value="{books>Name}" visible="{books>editMode}"/>
+                            </HBox>
                             <Text text="{books>Author}" />
                             <Text text="{books>Genre}" />
                             <Text text="{books>ReleaseDate}" />
                             <Text text="{books>AvailableQuantity}" />
+                            <HBox alignItems="Center" justifyContent="Center">
+                                <Button 
+                                    type="Transparent" 
+                                    text="Edit Title" 
+                                    visible="{= !${books>editMode}}" 
+                                    press="editTittle"/>
+                                <Button 
+                                    type="Transparent" 
+                                    text="Save Title" 
+                                    visible="{books>editMode}" 
+                                    press="saveEditedTittle"/>
+                            </HBox>
                         </cells>
                     </ColumnListItem>
                 </items>

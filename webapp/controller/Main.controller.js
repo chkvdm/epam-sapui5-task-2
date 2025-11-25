@@ -18,6 +18,20 @@ sap.ui.define(
 
         oBooksModel.attachRequestCompleted(() => {
           const aBooks = this.getModel('books').getProperty('/Books');
+
+          // add editMode property to the every item
+          if (aBooks) {
+            const aBooksWithEditMode = aBooks.map((book) => {
+              return {
+                ...book,
+                editMode: false,
+              };
+            });
+
+            this.getModel('books').setProperty('/Books', aBooksWithEditMode);
+          }
+
+          // create genre model
           const aUniqueGenres = [...new Set(aBooks.map((book) => book.Genre))];
 
           const aGenres = [
@@ -43,6 +57,7 @@ sap.ui.define(
           Genre: '',
           ReleaseDate: '',
           AvailableQuantity: '',
+          editMode: false,
         };
 
         aBooks.push(oNewBook);
@@ -82,6 +97,32 @@ sap.ui.define(
         const oList = this.byId('booksTable');
         const oBinding = oList.getBinding('items');
         oBinding.filter(aFilter);
+      },
+
+      editTittle(oEvent) {
+        const oEditButtonContext = oEvent
+          .getSource()
+          .getBindingContext('books');
+        const sBookTittleCellPath = oEditButtonContext.getPath();
+
+        this.getModel('books').setProperty(
+          sBookTittleCellPath + '/editMode',
+          true
+        );
+      },
+
+      saveEditedTittle(oEvent) {
+        const oSaveButtonContext = oEvent
+          .getSource()
+          .getBindingContext('books');
+        const sBookTittleCellPath = oSaveButtonContext.getPath();
+
+        this.getModel('books').setProperty(
+          sBookTittleCellPath + '/editMode',
+          false
+        );
+
+        console.log(oEvent.getSource());
       },
     });
   }
