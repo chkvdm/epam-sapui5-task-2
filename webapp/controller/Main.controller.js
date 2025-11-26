@@ -106,7 +106,7 @@ sap.ui.define(
         const sBookTittleCellPath = oEditButtonContext.getPath();
 
         this.getModel('books').setProperty(
-          sBookTittleCellPath + '/editMode',
+          `${sBookTittleCellPath}/editMode`,
           true
         );
       },
@@ -118,11 +118,9 @@ sap.ui.define(
         const sBookTittleCellPath = oSaveButtonContext.getPath();
 
         this.getModel('books').setProperty(
-          sBookTittleCellPath + '/editMode',
+          `${sBookTittleCellPath}/editMode`,
           false
         );
-
-        console.log(oEvent.getSource());
       },
     });
   }
