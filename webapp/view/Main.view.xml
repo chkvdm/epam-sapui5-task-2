@@ -15,8 +15,8 @@
                     <Toolbar>
                         <Title text="Available Books" level="H2" />
                         <ToolbarSpacer/>
-                        <Button type="Accept" text="Add Record" press="addRecordHandler"></Button>
-                        <Button type="Reject" text="Delete Record" press="deleteSelectedRecordHandler"></Button>
+                        <Button type="Accept" text="Add Record" press=".onAddRecordPress"></Button>
+                        <Button type="Reject" text="Delete Record" press=".onDeleteRecordsPress"></Button>
                         <ToolbarSeparator/>
                         <Input 
                             id="bookTittleFilterInput"
@@ -31,7 +31,7 @@
                             width="15%">
                             <core:Item key="{genres>genre}" text="{genres>genre}" />
 				        </Select>
-                        <Button type="Default" text="Filter" press="setFilter"></Button>
+                        <Button type="Default" text="Filter" press=".setFilterPress"></Button>
                     </Toolbar>
                 </headerToolbar>
 
