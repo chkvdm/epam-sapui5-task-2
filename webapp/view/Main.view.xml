@@ -6,13 +6,32 @@
     <Page id="page" title="{i18n>title}">
         <content>
             <Table
-                id="bookTable" 
+                id="booksTable"
+                mode="MultiSelect"
                 class="sapUiResponsiveMargin"
                 width="auto"
                 items="{path:'books>/Books'}">
                 <headerToolbar>
                     <Toolbar>
                         <Title text="Available Books" level="H2" />
+                        <ToolbarSpacer/>
+                        <Button type="Accept" text="Add Record" press="addRecordHandler"></Button>
+                        <Button type="Reject" text="Delete Record" press="deleteSelectedRecordHandler"></Button>
+                        <ToolbarSeparator/>
+                        <Input 
+                            id="bookTittleFilterInput"
+                            placeholder="Enter a book name"
+                            width="15%"/>
+                        <Select
+                            id="bookGenreFilterSelect"
+                            items="{
+                                path: 'genres>/',
+                                sorter: { path: 'genre' }
+                            }"
+                            width="15%">
+                            <core:Item key="{genres>genre}" text="{genres>genre}" />
+				        </Select>
+                        <Button type="Default" text="Filter" press="setFilter"></Button>
                     </Toolbar>
                 </headerToolbar>
 
