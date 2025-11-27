@@ -4,9 +4,40 @@ sap.ui.define(
     './BaseController',
     'sap/ui/model/Filter',
     'sap/ui/model/FilterOperator',
+    'sap/m/Dialog',
+    'sap/m/Button',
+    'sap/m/Text',
+    'sap/m/library',
+    'sap/ui/core/library',
+    // 'sap/ui/core/Element',
+    // 'sap/ui/layout/HorizontalLayout',
+    // 'sap/ui/layout/VerticalLayout',
+    // 'sap/m/Label',
+    // 'sap/m/MessageToast',
+    // 'sap/m/TextArea',
   ],
-  (JSONModel, BaseController, Filter, FilterOperator) => {
-    'use strict';
+  (
+    JSONModel,
+    BaseController,
+    Filter,
+    FilterOperator,
+    Dialog,
+    Button,
+    Text,
+    mobileLibrary,
+    coreLibrary
+    // Element,
+    // HorizontalLayout,
+    // VerticalLayout,
+    // Label,
+    // MessageToast,
+    // TextArea
+  ) => {
+    ('use strict');
+
+    const DialogType = mobileLibrary.DialogType;
+    const ButtonType = mobileLibrary.ButtonType;
+    // const ValueState = coreLibrary.ValueState;
 
     return BaseController.extend('epamsapui5task2.controller.Main', {
       onInit() {
@@ -18,6 +49,20 @@ sap.ui.define(
 
         oBooksModel.attachRequestCompleted(() => {
           const aBooks = this.getModel('books').getProperty('/Books');
+
+          // add editMode property to the every item
+          if (aBooks) {
+            const aBooksWithEditMode = aBooks.map((book) => {
+              return {
+                ...book,
+                editMode: false,
+              };
+            });
+
+            this.getModel('books').setProperty('/Books', aBooksWithEditMode);
+          }
+
+          // create genre model
           const aUniqueGenres = [...new Set(aBooks.map((book) => book.Genre))];
 
           const aGenres = [
@@ -32,26 +77,80 @@ sap.ui.define(
         });
       },
 
-      addRecordHandler() {
+      onAddRecordPress() {
         const oModel = this.getModel('books');
         const aBooks = oModel.getProperty('/Books');
 
         const oNewBook = {
-          ID: 'B' + String(aBooks.length + 1).padStart(3, '0'),
+          ID: `B${(aBooks.length + 1).toString().padStart(3, '0')}`,
           Name: '',
           Author: '',
           Genre: '',
           ReleaseDate: '',
           AvailableQuantity: '',
+          editMode: false,
         };
 
         aBooks.push(oNewBook);
         oModel.setProperty('/Books', aBooks);
       },
 
-      deleteSelectedRecordHandler() {
+      onDeleteRecordsPress: function () {
         const aSelectedItems = this.byId('booksTable').getSelectedItems();
-        const oModel = this.getView().getModel('books');
+
+        // if no selected rows
+        if (aSelectedItems.length === 0) {
+          if (!this.oErrorMessageDialog) {
+            this.oErrorMessageDialog = new Dialog({
+              type: DialogType.Message,
+              title: 'Error',
+              content: new Text({
+                text: 'Please select at least one book to delete.',
+              }),
+              beginButton: new Button({
+                type: ButtonType.Emphasized,
+                text: 'OK',
+                press: function () {
+                  this.oErrorMessageDialog.close();
+                }.bind(this),
+              }),
+            });
+          }
+          this.oErrorMessageDialog.open();
+          return;
+        }
+
+        // if have selected rows
+        if (!this.oApproveDialog) {
+          this.oApproveDialog = new Dialog({
+            type: DialogType.Message,
+            title: 'Confirm',
+            content: new Text({
+              text: 'Are you sure you want to delete selected records?',
+            }),
+            beginButton: new Button({
+              type: ButtonType.Emphasized,
+              text: 'Yes',
+              press: function () {
+                this._deleteRowsAction();
+                this.oApproveDialog.close();
+              }.bind(this),
+            }),
+            endButton: new Button({
+              text: 'No',
+              press: function () {
+                this.oApproveDialog.close();
+              }.bind(this),
+            }),
+          });
+        }
+
+        this.oApproveDialog.open();
+      },
+
+      _deleteRowsAction: function () {
+        const aSelectedItems = this.byId('booksTable').getSelectedItems();
+        const oModel = this.getModel('books');
         const aBooks = oModel.getProperty('/Books');
 
         const aSelectedBooksIds = aSelectedItems.map((oItem) => {
@@ -62,10 +161,11 @@ sap.ui.define(
           return !aSelectedBooksIds.includes(oBook.ID);
         });
 
+        this.byId('booksTable').removeSelections();
         oModel.setProperty('/Books', aFilteredBooks);
       },
 
-      setFilter() {
+      setFilterPress() {
         const aFilter = [];
 
         const sTitle = this.byId('bookTittleFilterInput').getValue();
@@ -82,6 +182,30 @@ sap.ui.define(
         const oList = this.byId('booksTable');
         const oBinding = oList.getBinding('items');
         oBinding.filter(aFilter);
+      },
+
+      editTittle(oEvent) {
+        const oEditButtonContext = oEvent
+          .getSource()
+          .getBindingContext('books');
+        const sBookTittleCellPath = oEditButtonContext.getPath();
+
+        this.getModel('books').setProperty(
+          `${sBookTittleCellPath}/editMode`,
+          true
+        );
+      },
+
+      saveEditedTittle(oEvent) {
+        const oSaveButtonContext = oEvent
+          .getSource()
+          .getBindingContext('books');
+        const sBookTittleCellPath = oSaveButtonContext.getPath();
+
+        this.getModel('books').setProperty(
+          `${sBookTittleCellPath}/editMode`,
+          false
+        );
       },
     });
   }
